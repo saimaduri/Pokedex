@@ -2,6 +2,7 @@ package com.example.a10012826.pokedex;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         list = new ArrayList<>();
         listView = findViewById(R.id.listView);
 
@@ -71,17 +71,35 @@ public class MainActivity extends AppCompatActivity {
             View adapterLayout = layoutInflater.inflate(resource, null);
             TextView textView = adapterLayout.findViewById(R.id.id_textview);
             ImageView imageView = adapterLayout.findViewById(R.id.id_image);
+            final ImageView favorite = adapterLayout.findViewById(R.id.id_favorite);
             Button button = adapterLayout.findViewById(R.id.id_button);
+
+            favorite.setTag(R.drawable.staroff);
 
             textView.setText(list.get(position).getName());
             imageView.setImageResource(list.get(position).getImage());
 
+            favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if ((Integer)favorite.getTag() == R.drawable.staroff) {
+                        favorite.setImageResource(R.drawable.staron);
+                        favorite.setTag(R.drawable.staron);
+                    } else {
+                        favorite.setImageResource(R.drawable.staroff);
+                        favorite.setTag(R.drawable.staroff);
+                    }
+                }
+            });
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(MainActivity.this, "Clicked " + list.get(position).getName(), Toast.LENGTH_LONG).show();
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         tvdescription.setText(list.get(position).getDescription());
+                    } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        Intent intent = new Intent(MainActivity.this, PopUp.class);
+                        startActivity(intent);
                     }
                 }
             });
@@ -97,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         String weaknesses;
         String strengths;
         String description;
+        boolean favorite;
 
         public Pokemon(String name, int image, String weaknesses, String strengths, String description) {
             this.name = name;
@@ -104,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             this.weaknesses = weaknesses;
             this.strengths = strengths;
             this.description = description;
+            favorite = false;
         }
 
         public String getName() {
@@ -124,6 +144,14 @@ public class MainActivity extends AppCompatActivity {
 
         public String getDescription() {
             return description;
+        }
+
+        public boolean getFavorite() {
+            return favorite;
+        }
+
+        public void setFavorite(boolean favorite) {
+            this.favorite = favorite;
         }
     }
 }
