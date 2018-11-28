@@ -2,10 +2,12 @@ package com.example.a10012826.pokedex;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     ListView listView;
+    TextView tvdescription;
     ArrayList<Pokemon> list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +34,19 @@ public class MainActivity extends AppCompatActivity {
         list = new ArrayList<>();
         listView = findViewById(R.id.listView);
 
-        list.add(new Pokemon("Bulbasaur", R.drawable.bulbasaur, "Fire", "Water"));
-        list.add(new Pokemon("Charmander", R.drawable.charmander, "Water", "Grass"));
-        list.add(new Pokemon("Bulbasaur", R.drawable.squirtle, "Grass", "Fire"));
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            tvdescription = findViewById(R.id.tvdescription);
+            tvdescription.setMovementMethod(new ScrollingMovementMethod());
+        }
+
+        list.add(new Pokemon("Bulbasaur", R.drawable.bulbasaur, "Fire", "Water", "Bulbasaur is a cute Pokémon born with a large seed firmly affixed to its back; the seed grows in size as the Pokémon does. Along with Squirtle and Charmander, Bulbasaur is one of the three Pokémon available at the beginning of Pokémon Red and Blue. It evolves into Ivysaur."));
+        list.add(new Pokemon("Charmander", R.drawable.charmander, "Water", "Grass", "Charmander is a bipedal, reptilian Pokémon with a primarily orange body. Its underside from the chest down and soles are cream-colored. It has two small fangs visible in its upper jaw and two smaller fangs in its lower jaw. Charmander has blue eyes. Its arms and legs are short with four fingers and three clawed toes. A fire burns at the tip of this Pokémon's slender tail and has blazed there since Charmander's birth. The flame can be used as an indication of Charmander's health and mood, burning brightly when the Pokémon is strong, weakly when it is exhausted, wavering when it is happy, and blazing when it is enraged. It is said that Charmander dies if its flame goes out. However, if the Pokémon is healthy, the flame will continue to burn even if it gets a bit wet and is said to steam in the rain."));
+        list.add(new Pokemon("Bulbasaur", R.drawable.squirtle, "Grass", "Fire", "It evolves into Wartortle starting at level 16, which evolves into Blastoise starting at level 36. Along with Bulbasaur and Charmander, Squirtle is one of three starter Pokémon of Kanto available at the beginning of Pokémon Red, Green, Blue, FireRed, and LeafGreen."));
 
 
         CustomAdapter adapter = new CustomAdapter(this, R.layout.pokemon_layout, list);
-        if (getApplicationContext() != null) {
-            listView.setAdapter(adapter);
-        }
 
+        listView.setAdapter(adapter);
     }
 
     public class CustomAdapter extends ArrayAdapter<Pokemon> {
@@ -74,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(MainActivity.this, "Clicked " + list.get(position).getName(), Toast.LENGTH_LONG).show();
+                    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        tvdescription.setText(list.get(position).getDescription());
+                    }
                 }
             });
 
@@ -87,12 +96,14 @@ public class MainActivity extends AppCompatActivity {
         int image;
         String weaknesses;
         String strengths;
+        String description;
 
-        public Pokemon(String name, int image, String weaknesses, String strengths) {
+        public Pokemon(String name, int image, String weaknesses, String strengths, String description) {
             this.name = name;
             this.image = image;
             this.weaknesses = weaknesses;
             this.strengths = strengths;
+            this.description = description;
         }
 
         public String getName() {
@@ -109,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
 
         public String getStrengths() {
             return strengths;
+        }
+
+        public String getDescription() {
+            return description;
         }
     }
 }
