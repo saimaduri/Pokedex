@@ -31,9 +31,10 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     TextView tvdescription;
     ArrayList<Pokemon> list;
-    int number;
+    int number = 0;
     public static final String POKEMON_LIST = "Pokemon List";
     public static final String POKEMON_DESCRIPTION = "Pokemon Description";
+    public static final String POKEMON_NAME = "Pokemon Name";
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -53,14 +54,15 @@ public class MainActivity extends AppCompatActivity {
         list.add(new Pokemon("Charmander", R.drawable.charmander, "Water", "Grass", "Charmander is a bipedal, reptilian Pokémon with a primarily orange body. Its underside from the chest down and soles are cream-colored. It has two small fangs visible in its upper jaw and two smaller fangs in its lower jaw. Charmander has blue eyes. Its arms and legs are short with four fingers and three clawed toes. A fire burns at the tip of this Pokémon's slender tail and has blazed there since Charmander's birth. The flame can be used as an indication of Charmander's health and mood, burning brightly when the Pokémon is strong, weakly when it is exhausted, wavering when it is happy, and blazing when it is enraged. It is said that Charmander dies if its flame goes out. However, if the Pokémon is healthy, the flame will continue to burn even if it gets a bit wet and is said to steam in the rain."));
         list.add(new Pokemon("Bulbasaur", R.drawable.squirtle, "Grass", "Fire", "It evolves into Wartortle starting at level 16, which evolves into Blastoise starting at level 36. Along with Bulbasaur and Charmander, Squirtle is one of three starter Pokémon of Kanto available at the beginning of Pokémon Red, Green, Blue, FireRed, and LeafGreen."));
 
-
         if (savedInstanceState != null) {
             list = (ArrayList<Pokemon>)savedInstanceState.getSerializable(POKEMON_LIST);
+            number = (int)savedInstanceState.getSerializable(POKEMON_DESCRIPTION);
         }
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             tvdescription = findViewById(R.id.tvdescription);
             tvdescription.setMovementMethod(new ScrollingMovementMethod());
+            tvdescription.setText(list.get(number).getDescription());
         }
 
         CustomAdapter adapter = new CustomAdapter(this, R.layout.pokemon_layout, list);
@@ -124,8 +126,11 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Clicked " + list.get(position).getName(), Toast.LENGTH_LONG).show();
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         tvdescription.setText(list.get(position).getDescription());
-                    } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        number = position;
                         Intent intent = new Intent(MainActivity.this, PopUp.class);
+                        intent.putExtra(POKEMON_DESCRIPTION, list.get(position).getDescription());
+                        intent.putExtra(POKEMON_NAME, list.get(position).getName());
                         startActivity(intent);
                     }
                 }
