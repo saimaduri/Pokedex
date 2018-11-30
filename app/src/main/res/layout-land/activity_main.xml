@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/colorAccent">
 
     <ListView
+        android:padding="10dp"
         android:id="@+id/listView"
         android:layout_width="400dp"
         android:layout_height="0dp"
@@ -22,6 +24,7 @@
 
     <TextView
         android:id="@+id/tvdescription"
+        android:background="@color/colorPrimaryDark"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
