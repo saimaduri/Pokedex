@@ -24,6 +24,7 @@ import android.widget.Toast;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -123,10 +124,15 @@ public class MainActivity extends AppCompatActivity {
                         favorite.setImageResource(R.drawable.staron);
                         favorite.setTag(R.drawable.staron);
                         list.get(position).setFavorite(1);
+                        Collections.sort(list);
+                        notifyDataSetChanged();
                     } else {
                         favorite.setImageResource(R.drawable.staroff);
                         favorite.setTag(R.drawable.staroff);
                         list.get(position).setFavorite(0);
+                        Collections.sort(list);
+
+                        notifyDataSetChanged();
                     }
                 }
             });
@@ -205,14 +211,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int compareTo(Pokemon o) {
             if (favorite > o.getFavorite()) {
-                return 1;
+                return -1;
             } else if (favorite < o.getFavorite()) {
-                return 0;
+                return 1;
             } else {
-                if (number > o.getNumber()) {
-                    return 1;
+                if (number < o.getNumber()) {
+                    return -1;
                 } else {
-                    return 0;
+                    return 1;
                 }
             }
         }
