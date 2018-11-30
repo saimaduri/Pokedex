@@ -31,16 +31,17 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     TextView tvdescription;
     ArrayList<Pokemon> list;
-    int number = 0;
+    int number = -1;
     public static final String POKEMON_LIST = "Pokemon List";
-    public static final String POKEMON_DESCRIPTION = "Pokemon Description";
+    public static final String POKEMON_NUMBER = "Pokemon Number";
     public static final String POKEMON_NAME = "Pokemon Name";
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(POKEMON_LIST, list);
-        outState.putSerializable(POKEMON_DESCRIPTION, number);
+        outState.putSerializable(POKEMON_NUMBER, number);
     }
 
     @Override
@@ -50,19 +51,28 @@ public class MainActivity extends AppCompatActivity {
         list = new ArrayList<>();
         listView = findViewById(R.id.listView);
 
-        list.add(new Pokemon("Bulbasaur", R.drawable.bulbasaur, "Fire", "Water", "Bulbasaur is a cute Pokémon born with a large seed firmly affixed to its back; the seed grows in size as the Pokémon does. Along with Squirtle and Charmander, Bulbasaur is one of the three Pokémon available at the beginning of Pokémon Red and Blue. It evolves into Ivysaur."));
-        list.add(new Pokemon("Charmander", R.drawable.charmander, "Water", "Grass", "Charmander is a bipedal, reptilian Pokémon with a primarily orange body. Its underside from the chest down and soles are cream-colored. It has two small fangs visible in its upper jaw and two smaller fangs in its lower jaw. Charmander has blue eyes. Its arms and legs are short with four fingers and three clawed toes. A fire burns at the tip of this Pokémon's slender tail and has blazed there since Charmander's birth. The flame can be used as an indication of Charmander's health and mood, burning brightly when the Pokémon is strong, weakly when it is exhausted, wavering when it is happy, and blazing when it is enraged. It is said that Charmander dies if its flame goes out. However, if the Pokémon is healthy, the flame will continue to burn even if it gets a bit wet and is said to steam in the rain."));
-        list.add(new Pokemon("Bulbasaur", R.drawable.squirtle, "Grass", "Fire", "It evolves into Wartortle starting at level 16, which evolves into Blastoise starting at level 36. Along with Bulbasaur and Charmander, Squirtle is one of three starter Pokémon of Kanto available at the beginning of Pokémon Red, Green, Blue, FireRed, and LeafGreen."));
+        list.add(new Pokemon("Bulbasaur", R.drawable.bulbasaur, 1, "Fire", "Water", "Bulbasaur is a cute Pokémon born with a large seed firmly affixed to its back; the seed grows in size as the Pokémon does. Along with Squirtle and Charmander, Bulbasaur is one of the three Pokémon available at the beginning of Pokémon Red and Blue. It evolves into Ivysaur."));
+        list.add(new Pokemon("Charmander", R.drawable.charmander, 4,"Water", "Grass", "Charmander is a bipedal, reptilian Pokémon with a primarily orange body. Its underside from the chest down and soles are cream-colored. It has two small fangs visible in its upper jaw and two smaller fangs in its lower jaw. Charmander has blue eyes. Its arms and legs are short with four fingers and three clawed toes. A fire burns at the tip of this Pokémon's slender tail and has blazed there since Charmander's birth. The flame can be used as an indication of Charmander's health and mood, burning brightly when the Pokémon is strong, weakly when it is exhausted, wavering when it is happy, and blazing when it is enraged. It is said that Charmander dies if its flame goes out. However, if the Pokémon is healthy, the flame will continue to burn even if it gets a bit wet and is said to steam in the rain."));
+        list.add(new Pokemon("Squirtle", R.drawable.squirtle, 7,"Grass", "Fire", "It evolves into Wartortle starting at level 16, which evolves into Blastoise starting at level 36. Along with Bulbasaur and Charmander, Squirtle is one of three starter Pokémon of Kanto available at the beginning of Pokémon Red, Green, Blue, FireRed, and LeafGreen."));
 
         if (savedInstanceState != null) {
             list = (ArrayList<Pokemon>)savedInstanceState.getSerializable(POKEMON_LIST);
-            number = (int)savedInstanceState.getSerializable(POKEMON_DESCRIPTION);
+            number = (int)savedInstanceState.getSerializable(POKEMON_NUMBER);
         }
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             tvdescription = findViewById(R.id.tvdescription);
             tvdescription.setMovementMethod(new ScrollingMovementMethod());
-            tvdescription.setText(list.get(number).getDescription());
+            if (number > -1) {
+                tvdescription.setText(list.get(number).getDescription());
+            }
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (number > -1) {
+                Intent intent = new Intent(this, PopUp.class);
+                intent.putExtra(POKEMON_NAME, list.get(number).getName());
+                intent.putExtra(POKEMON_NUMBER, list.get(number).getDescription());
+                startActivity(intent);
+            }
         }
 
         CustomAdapter adapter = new CustomAdapter(this, R.layout.pokemon_layout, list);
@@ -125,33 +135,35 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Toast.makeText(MainActivity.this, "Clicked " + list.get(position).getName(), Toast.LENGTH_LONG).show();
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        number = position;
                         tvdescription.setText(list.get(position).getDescription());
                 } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         number = position;
                         Intent intent = new Intent(MainActivity.this, PopUp.class);
-                        intent.putExtra(POKEMON_DESCRIPTION, list.get(position).getDescription());
+                        intent.putExtra(POKEMON_NUMBER, list.get(position).getDescription());
                         intent.putExtra(POKEMON_NAME, list.get(position).getName());
                         startActivity(intent);
                     }
                 }
             });
-
             return adapterLayout;
         }
     }
 
-    public class Pokemon implements Serializable {
+    public class Pokemon implements Serializable, Comparable<Pokemon> {
 
         String name;
         int image;
+        int number;
         String weaknesses;
         String strengths;
         String description;
         int favorite;
 
-        public Pokemon(String name, int image, String weaknesses, String strengths, String description) {
+        public Pokemon(String name, int image, int number, String weaknesses, String strengths, String description) {
             this.name = name;
             this.image = image;
+            this.number = number;
             this.weaknesses = weaknesses;
             this.strengths = strengths;
             this.description = description;
@@ -164,6 +176,10 @@ public class MainActivity extends AppCompatActivity {
 
         public int getImage() {
             return image;
+        }
+
+        public int getNumber() {
+            return number;
         }
 
         public String getWeaknesses() {
@@ -184,6 +200,21 @@ public class MainActivity extends AppCompatActivity {
 
         public void setFavorite(int favorite) {
             this.favorite = favorite;
+        }
+
+        @Override
+        public int compareTo(Pokemon o) {
+            if (favorite > o.getFavorite()) {
+                return 1;
+            } else if (favorite < o.getFavorite()) {
+                return 0;
+            } else {
+                if (number > o.getNumber()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
         }
     }
 }

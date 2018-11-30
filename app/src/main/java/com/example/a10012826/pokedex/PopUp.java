@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class PopUp extends Activity implements Serializable {
 
     String name;
-    public static final String POKEMON_DESCRIPTION = "Pokemon Description";
+    public static final String POKEMON_NUMBER = "Pokemon Number";
     public static final String POKEMON_NAME = "Pokemon Name";
     TextView tvdescription;
     TextView tvname;
@@ -22,6 +22,7 @@ public class PopUp extends Activity implements Serializable {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putSerializable(POKEMON_NUMBER, -1);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class PopUp extends Activity implements Serializable {
             tvname = findViewById(R.id.tv_name);
             tvdescription.setMovementMethod(new ScrollingMovementMethod());
 
-            String description = getIntent().getStringExtra(POKEMON_DESCRIPTION);
+            String description = getIntent().getStringExtra(POKEMON_NUMBER);
             String name = getIntent().getStringExtra(POKEMON_NAME);
             tvname.setText(name);
             tvdescription.setText(description);
