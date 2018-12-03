@@ -31,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
     ListView listView;
     TextView tvdescription;
+    TextView tvstrengths;
+    TextView tvweaknesses;
+    TextView tvname;
     ArrayList<Pokemon> list;
     int number = -1;
     public static final String POKEMON_LIST = "Pokemon List";
@@ -63,9 +66,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             tvdescription = findViewById(R.id.tvdescription);
+            tvstrengths = findViewById(R.id.tvstrengths);
+            tvweaknesses = findViewById(R.id.tvweaknesses);
+            tvname = findViewById(R.id.tvname);
             tvdescription.setMovementMethod(new ScrollingMovementMethod());
             if (number > -1) {
                 tvdescription.setText(list.get(number).getDescription());
+                tvweaknesses.setText("Weak Against:\n" + list.get(number).getWeaknesses());
+                tvstrengths.setText("Strong Against:\n" + list.get(number).getStrengths());
+                tvname.setText(list.get(number).getName());
             }
         } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (number > -1) {
@@ -143,6 +152,9 @@ public class MainActivity extends AppCompatActivity {
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         number = position;
                         tvdescription.setText(list.get(position).getDescription());
+                        tvweaknesses.setText("Weak Against:\n" + list.get(number).getWeaknesses());
+                        tvstrengths.setText("Strong Against:\n" + list.get(number).getStrengths());
+                        tvname.setText(list.get(number).getName());
                 } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         number = position;
                         Intent intent = new Intent(MainActivity.this, PopUp.class);

@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -18,6 +19,7 @@ public class PopUp extends Activity implements Serializable {
     public static final String POKEMON_NAME = "Pokemon Name";
     TextView tvdescription;
     TextView tvname;
+    Button button;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -40,6 +42,8 @@ public class PopUp extends Activity implements Serializable {
             String name = getIntent().getStringExtra(POKEMON_NAME);
             tvname.setText(name);
             tvdescription.setText(description);
+            button = findViewById(R.id.button);
+
         } else {
             finish();
         }
