@@ -39,12 +39,19 @@ public class MainActivity extends AppCompatActivity {
     public static final String POKEMON_LIST = "Pokemon List";
     public static final String POKEMON_NUMBER = "Pokemon Number";
     public static final String POKEMON_NAME = "Pokemon Name";
-
+    public static final String POKEMON_URL = "POKEMON URL";
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(POKEMON_LIST, list);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getName().equals(tvname.getText())) {
+                    number = i;
+                }
+            }
+        }
         outState.putSerializable(POKEMON_NUMBER, number);
     }
 
@@ -55,9 +62,17 @@ public class MainActivity extends AppCompatActivity {
         list = new ArrayList<>();
         listView = findViewById(R.id.listView);
 
-        list.add(new Pokemon("Bulbasaur", R.drawable.bulbasaur, 1, "Fire", "Water", "Bulbasaur is a cute Pokémon born with a large seed firmly affixed to its back; the seed grows in size as the Pokémon does. Along with Squirtle and Charmander, Bulbasaur is one of the three Pokémon available at the beginning of Pokémon Red and Blue. It evolves into Ivysaur."));
-        list.add(new Pokemon("Charmander", R.drawable.charmander, 4,"Water", "Grass", "Charmander is a bipedal, reptilian Pokémon with a primarily orange body. Its underside from the chest down and soles are cream-colored. It has two small fangs visible in its upper jaw and two smaller fangs in its lower jaw. Charmander has blue eyes. Its arms and legs are short with four fingers and three clawed toes. A fire burns at the tip of this Pokémon's slender tail and has blazed there since Charmander's birth. The flame can be used as an indication of Charmander's health and mood, burning brightly when the Pokémon is strong, weakly when it is exhausted, wavering when it is happy, and blazing when it is enraged. It is said that Charmander dies if its flame goes out. However, if the Pokémon is healthy, the flame will continue to burn even if it gets a bit wet and is said to steam in the rain."));
-        list.add(new Pokemon("Squirtle", R.drawable.squirtle, 7,"Grass", "Fire", "It evolves into Wartortle starting at level 16, which evolves into Blastoise starting at level 36. Along with Bulbasaur and Charmander, Squirtle is one of three starter Pokémon of Kanto available at the beginning of Pokémon Red, Green, Blue, FireRed, and LeafGreen."));
+        list.add(new Pokemon("Bulbasaur", R.drawable.bulbasaur, 1, "Fire", "Water", "Bulbasaur, a grass type, is one of the three starters in the Kanto region. It evolves into Ivysaur, and then Venesaur, making it a well-rounded starter.", "https://bulbapedia.bulbagarden.net/wiki/Bulbasaur_(Pok%C3%A9mon)"));
+        list.add(new Pokemon("Ivysaur", R.drawable.ivysaur, 2, "Fire", "Water", "Ivysaur, a grass type, is the evolved form of Bulbasaur. It evolves into Venusaur, a very strong grass type Pokemon.", "https://bulbapedia.bulbagarden.net/wiki/Ivysaur_(Pok%C3%A9mon)"));
+        list.add(new Pokemon("Venusaur", R.drawable.venusaur, 3, "Fire", "Water", "Venusaur, a grass type, is the second evolution of Bulbasaur. It evolves directly from Ivysaur, and is a very strong grass type Pokemon.", "https://bulbapedia.bulbagarden.net/wiki/Venusaur_(Pok%C3%A9mon)"));
+
+        list.add(new Pokemon("Charmander", R.drawable.charmander, 4,"Water", "Grass", "Charmander, the most popular starter of them all, is a fire type. Charmander evolves into Charmeleon and then Charizard, making it one of the strongest Pokemon in the game!", "https://bulbapedia.bulbagarden.net/wiki/Charmander_(Pok%C3%A9mon)"));
+        list.add(new Pokemon("Charmeleon", R.drawable.charmeleon, 5, "Water", "Grass", "Charmeleon, a fire type, is the evolved form of Charmander. It evolves into Charizard, one of the strongest Pokemon in the entire region.", "https://bulbapedia.bulbagarden.net/wiki/Charmeleon_(Pok%C3%A9mon)"));
+        list.add(new Pokemon("Charizard", R.drawable.charizard, 6, "Water", "Grass", "Charizard, a fire type, is the second evolution of Charmander. It evolves from Charmeleon, one of the strongest Pokemon in the entire region. It is also one of the fan favorites among many trainers.", "https://bulbapedia.bulbagarden.net/wiki/Charizard_(Pok%C3%A9mon)"));
+
+        list.add(new Pokemon("Squirtle", R.drawable.squirtle, 7,"Grass", "Fire", "Squirtle, a water type, evolves into Wartortle and then Blastoise. Squirtle is a strong starter and helps the player take out the Pewter City Gym early on in the game.", "https://bulbapedia.bulbagarden.net/wiki/Squirtle_(Pok%C3%A9mon)"));
+        list.add(new Pokemon("Wartortle", R.drawable.wartortle, 8, "Grass", "Fire", "Wartortle,, a water type, is the evolved form of Squirtle. It evolves into Blastoise, an extremely powerful Pokemon", "https://bulbapedia.bulbagarden.net/wiki/Wartortle_(Pok%C3%A9mon)"));
+        list.add(new Pokemon("Blastoise", R.drawable.blastoise, 9, "Grass", "Fire", "Blastoise,, a water type, is the second evolution of Squirtle. It evolves from Wartortle, and is an extremely strong Pokemon.", "https://bulbapedia.bulbagarden.net/wiki/Blastoise_(Pok%C3%A9mon)"));
 
         if (savedInstanceState != null) {
             list = (ArrayList<Pokemon>)savedInstanceState.getSerializable(POKEMON_LIST);
@@ -81,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, PopUp.class);
                 intent.putExtra(POKEMON_NAME, list.get(number).getName());
                 intent.putExtra(POKEMON_NUMBER, list.get(number).getDescription());
+                intent.putExtra(POKEMON_URL, list.get(number).getUrl());
                 startActivity(intent);
             }
         }
@@ -140,9 +156,10 @@ public class MainActivity extends AppCompatActivity {
                         favorite.setTag(R.drawable.staroff);
                         list.get(position).setFavorite(0);
                         Collections.sort(list);
-
                         notifyDataSetChanged();
                     }
+//                    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+//                        tvname.setText(list.get(number).getName());
                 }
             });
             button.setOnClickListener(new View.OnClickListener() {
@@ -160,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, PopUp.class);
                         intent.putExtra(POKEMON_NUMBER, list.get(position).getDescription());
                         intent.putExtra(POKEMON_NAME, list.get(position).getName());
+                        intent.putExtra(POKEMON_URL, list.get(position).getUrl());
                         startActivity(intent);
                     }
                 }
@@ -176,15 +194,17 @@ public class MainActivity extends AppCompatActivity {
         String weaknesses;
         String strengths;
         String description;
+        String url;
         int favorite;
 
-        public Pokemon(String name, int image, int number, String weaknesses, String strengths, String description) {
+        public Pokemon(String name, int image, int number, String weaknesses, String strengths, String description, String url) {
             this.name = name;
             this.image = image;
             this.number = number;
             this.weaknesses = weaknesses;
             this.strengths = strengths;
             this.description = description;
+            this.url = url;
             favorite = 0;
         }
 
@@ -218,6 +238,10 @@ public class MainActivity extends AppCompatActivity {
 
         public void setFavorite(int favorite) {
             this.favorite = favorite;
+        }
+
+        public String getUrl() {
+            return url;
         }
 
         @Override

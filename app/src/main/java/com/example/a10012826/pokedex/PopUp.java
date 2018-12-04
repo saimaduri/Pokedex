@@ -3,11 +3,14 @@ package com.example.a10012826.pokedex;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,8 +18,10 @@ import java.util.ArrayList;
 public class PopUp extends Activity implements Serializable {
 
     String name;
+    String url;
     public static final String POKEMON_NUMBER = "Pokemon Number";
     public static final String POKEMON_NAME = "Pokemon Name";
+    public static final String POKEMON_URL = "POKEMON URL";
     TextView tvdescription;
     TextView tvname;
     Button button;
@@ -43,9 +48,23 @@ public class PopUp extends Activity implements Serializable {
             tvname.setText(name);
             tvdescription.setText(description);
             button = findViewById(R.id.button);
+            url = getIntent().getStringExtra(POKEMON_URL);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openWebPage(url);
+                    finish();
+                }
+            });
 
         } else {
             finish();
         }
+    }
+
+    public void openWebPage(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        startActivity(intent);
     }
 }
